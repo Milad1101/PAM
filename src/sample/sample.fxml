@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <Pane prefHeight="550.0" prefWidth="670.0">
+         <children>
+            <Separator layoutY="129.0" prefHeight="9.0" prefWidth="670.0" />
+            <ListView fx:id="projectList1" disable="true" layoutX="361.0" layoutY="174.0" prefHeight="116.0" prefWidth="295.0" />
+            <Separator layoutX="326.0" layoutY="129.0" orientation="VERTICAL" prefHeight="420.0" prefWidth="9.0" />
+            <ListView fx:id="projectList2" disable="true" layoutX="14.0" layoutY="174.0" prefHeight="116.0" prefWidth="295.0" />
+            <Button fx:id="yesAnswerBut" layoutX="110.0" layoutY="104.0" mnemonicParsing="false" onAction="#yesButClicked" text="نعم" />
+            <Button fx:id="selectProjectBut1" disable="true" layoutX="469.0" layoutY="302.0" mnemonicParsing="false" text="اختر المشروع" wrapText="true" />
+            <ListView fx:id="professorList1" disable="true" layoutX="361.0" layoutY="346.0" prefHeight="116.0" prefWidth="295.0" />
+            <ListView fx:id="professorList2" disable="true" layoutX="14.0" layoutY="346.0" prefHeight="116.0" prefWidth="295.0" />
+            <Button fx:id="selectProfessorBut1" disable="true" layoutX="470.0" layoutY="482.0" mnemonicParsing="false" text="اختر المشرف" wrapText="true" />
+            <Button fx:id="noAnswerBut" layoutX="38.0" layoutY="104.0" mnemonicParsing="false" text="لا" />
+            <Label alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="604.0" layoutY="38.0" text="السؤال" textAlignment="RIGHT" />
+            <Button fx:id="selectProfessorBut2" disable="true" layoutX="122.0" layoutY="482.0" mnemonicParsing="false" text="اختر المشرف" wrapText="true" />
+            <Button fx:id="selectProjectBut2" disable="true" layoutX="122.0" layoutY="302.0" mnemonicParsing="false" text="اختر المشروع" wrapText="true" />
+         </children>
+      </Pane>
+   </children>
+</GridPane>
