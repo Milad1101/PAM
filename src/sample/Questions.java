@@ -13,10 +13,15 @@ public class Questions {
         this.question=question;
         this.answers=answers;
         this.type=type;
-
     }
 
-    /////////////////////////GETTERS//////////////////////
+    public Questions(String question,ArrayList<String> answers,int type){
+        this.question=question;
+        this.answers=answers;
+        this.type=type;
+    }
+
+/////////////////////////GETTERS//////////////////////
     public int getId() {
         return id;
     }
@@ -33,7 +38,7 @@ public class Questions {
         return type;
     }
 
-    ///////////////////////////SETTERS//////////////////////
+   ///////////////////////////SETTERS//////////////////////
 
 
     public void setId(int id) {

@@ -1,10 +1,13 @@
 package sample;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,47 +17,308 @@ import java.util.ResourceBundle;
 public class Controller implements Initializable{
 
     @FXML
-    ListView<String> projectList1 , projectList2 , professorList1,professorList2;
+    ListView<String> projectList1 , professorList1;
     @FXML
-    Button yesAnswerBut , noAnswerBut , selectProjectBut1 , selectProjectBut2
-            ,selectProfessorBut1 , selectProfessorBut2;
+    Button answerBut , selectProjectBut1 ,selectProfessorBut1 ;
+    @FXML
+    TextArea questionArea;
+    @FXML
+    ChoiceBox answerMenu;
 
-    DBManager dbManager;
 
-
-
+    private int currentQuestionIndex = 0;
+    private boolean[] questionsAnswers;
+    private boolean[][] shouldAskQuestions;
+    private DBManager dbManager;
+    private ArrayList<Questions> questions;
+    private Project targetProject;
+    private ArrayList<Project> goodProjects;
+    private Project selectedProject;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        questions = new ArrayList<>();
         dbManager = new DBManager();
+        questions = dbManager.getQuestions();
+
+        setQuestion(questions.get(0));
+
+        shouldAskQuestions = new boolean[14][14];
+        questionsAnswers = new boolean[14];
+
+        fillShouldAskQuestions(shouldAskQuestions);
+
+        boolean[] dept = new boolean[3];
+        boolean[] types = new boolean[14];
+        targetProject = new Project("",dept,types,new Professor());
+
     }
 
 
 
 
-    public void yesButClicked(ActionEvent event) {
 
 
 
-    }
 
 
 
-    private void newMethod(Project project){
 
-        ExcelReader er = new ExcelReader("astb.xlsx");
+    private void fillShouldAskQuestions(boolean[][] saq){
 
-        KnnAlgorithm knnAlgorithm = new KnnAlgorithm(er.getProjects());
-
-
-        ArrayList<Project> myProjects = knnAlgorithm.getGoodProjects(3,new ProjectPoint(project));
-
-        for(Project p : myProjects){
-            if((p.getDept()[0]&&project.getDept()[0])||(p.getDept()[1]&&project.getDept()[1])||(p.getDept()[2]&&project.getDept()[2]))
-                projectList1.getItems().add(p.getTitle());
+        ArrayList<Project> projects =   dbManager.getProjects();
+        for(int i = 0 ; i < DBManager.projectTypes.length ; i++) {
+            for (Project p : projects)
+                for(int j =0 ; j < DBManager.projectTypes.length ; j++)
+                    if(p.getTypes()[i]&&p.getTypes()[j]) saq[i][j] = true;
         }
 
     }
 
 
+
+
+
+
+
+
+
+
+
+
+    public void answerButClicked(ActionEvent event) {
+        String answer;
+
+        try {
+            answer = answerMenu.getValue().toString();
+        }catch (Exception e){
+            return;
+        }
+
+        if(currentQuestionIndex < 3) {
+
+            if (answer.equals(questions.get(currentQuestionIndex).getAnswers().get(0))) {
+                targetProject.getDept()[currentQuestionIndex] = true;
+                targetProject.getDept()[(currentQuestionIndex + 1) % 3] = false;
+                targetProject.getDept()[(currentQuestionIndex + 2) % 3] = false;
+                currentQuestionIndex = 2;
+            } else if(currentQuestionIndex == 1){
+                targetProject.getDept()[currentQuestionIndex] = false;
+                currentQuestionIndex = 2;
+                targetProject.getDept()[currentQuestionIndex] = true;
+                targetProject.getDept()[(currentQuestionIndex + 1) % 3] = false;
+                targetProject.getDept()[(currentQuestionIndex + 2) % 3] = false;
+            }else {
+                targetProject.getDept()[currentQuestionIndex] = false;
+            }
+            
+        } else {
+            
+            if (answer.equals(questions.get(currentQuestionIndex).getAnswers().get(0))) {
+                targetProject.getTypes()[questions.get(currentQuestionIndex).getType()] = true;
+                questionsAnswers[questions.get(currentQuestionIndex).getType()] =true;
+            } else {
+                targetProject.getTypes()[questions.get(currentQuestionIndex).getType()] = false;
+                questionsAnswers[questions.get(currentQuestionIndex).getType()] =false;
+            }
+            
+        }
+
+        nextQuestion();
+    }
+
+
+
+
+
+
+
+
+
+
+    private void nextQuestion(){
+
+        currentQuestionIndex++;
+        boolean enough= false;
+        while (!enough) {
+
+            enough =true;
+            for (int i = 0; i < DBManager.projectTypes.length; i++)
+                if (questionsAnswers[i])
+                    if (!shouldAskQuestions[i][questions.get(currentQuestionIndex).getType()]) {
+                        currentQuestionIndex++;
+                        enough = false;
+                        if(currentQuestionIndex >= questions.size()) break;
+                    }
+
+            if(currentQuestionIndex >= questions.size())break;
+
+        }
+
+        if(currentQuestionIndex >= questions.size()){
+            stage2();
+            return;
+        }
+
+        setQuestion(questions.get(currentQuestionIndex));
+    }
+
+
+
+
+
+
+
+
+
+
+    private void stage2() {
+
+        questionArea.setText("شكرا على الإجابة...\n يمكنك الإختيار من المشاريع المقترحة في الاسفل.");
+        answerMenu.setDisable(true);
+        answerBut.setDisable(true);
+        projectList1.setDisable(false);
+        projectList1.setDisable(false);
+        selectProjectBut1.setDisable(false);
+        knnForProjectMethod(targetProject);
+
+    }
+
+
+
+
+
+
+
+
+
+    private void setQuestion(Questions question){
+        questionArea.setText(question.getQuestion());
+        answerMenu.setItems(FXCollections.observableArrayList(questions.get(currentQuestionIndex).getAnswers()));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    private void knnForProjectMethod(Project project){
+
+        ArrayList<Project> dataProjects = new ArrayList<>();
+        int targetDept;
+        if(targetProject.getDept()[0])
+            targetDept = 0;
+        else if(targetProject.getDept()[1])
+            targetDept = 1;
+        else
+            targetDept = 2;
+
+        for(Project p : dbManager.getProjects())
+            if(p.getDept()[targetDept]) dataProjects.add(p);
+
+        KnnAlgorithm knnAlgorithm = new KnnAlgorithm(dataProjects);
+        goodProjects = knnAlgorithm.getGoodProjects(3,new ProjectPoint(project));
+
+        for(Project p : goodProjects)
+            if(p.getDept()[targetDept])
+                projectList1.getItems().add(p.getTitle());
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    private void knnForProfessorsMethod(Project project){
+
+        ArrayList<Project> dataProjects = new ArrayList<>();
+        int targetDept;
+        if(targetProject.getDept()[0])
+            targetDept = 0;
+        else if(targetProject.getDept()[1])
+            targetDept = 1;
+        else
+            targetDept = 2;
+
+        for(Project p : dbManager.getProjects())
+            if(p.getDept()[targetDept]) dataProjects.add(p);
+
+        KnnAlgorithm knnAlgorithm = new KnnAlgorithm(dataProjects);
+        ArrayList<Project> goodProjectsForProfessors = knnAlgorithm.getGoodProfessors(3, new ProjectPoint(project));
+
+        for(Project p : goodProjectsForProfessors)
+                if(p.getDept()[targetDept] && p.getProf().getDept() == targetDept)
+                    professorList1.getItems().add(p.getProf().getName());
+
+    }
+
+
+
+
+
+
+
+
+
+
+    public void selectProjectBut1Clicked(ActionEvent event) {
+
+        professorList1.setDisable(false);
+        selectProfessorBut1.setDisable(false);
+        String selectedProjectTitle = projectList1.getSelectionModel().getSelectedItem();
+        targetProject.setTitle(selectedProjectTitle);
+
+        for(Project p : goodProjects)
+            if(p.getTitle().equals(selectedProjectTitle)) selectedProject = p;
+
+        knnForProfessorsMethod(selectedProject);
+        projectList1.setDisable(true);
+        selectProjectBut1.setDisable(true);
+
+    }
+
+
+
+
+
+
+
+
+
+    public void selectProfessorBut1Clicked(ActionEvent event) {
+
+        String selectedProf = professorList1.getSelectionModel().getSelectedItem();
+        for(Professor p:dbManager.getProfessors())
+            if(p.getName().equals(selectedProf)) {
+                targetProject.setProf(p);
+                break;
+            }
+
+        String typeStr = "";
+        for(int i = 0 ; i < DBManager.projectTypes.length;i++)
+            if(selectedProject.getTypes()[i])
+                typeStr += " "+DBManager.projectTypes[i];
+
+        String msg = "مشروعك المختار هو: " +targetProject.getTitle()+"\n" +
+                "يتضمن ما يلي: " + typeStr +"\n" +
+                "تحت اشراف :" + targetProject.getProf().getName();
+
+
+        questionArea.setText(msg);
+        //dbManager.addProject(targetProject);
+    }
 }

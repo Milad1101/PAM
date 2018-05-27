@@ -22,9 +22,11 @@ public class ProjectPoint {
             if(b)numOfTypes++;
         }
 
-        if(numOfTypes == 0) return;
-
-        double v = 0.0;
+        if(numOfTypes == 0) {
+            type[0] = 1.0;
+            return;
+        }
+        double v;
         v = 1.0 / numOfTypes;
 
         for(int i = 0 ; i < type.length ; i++){

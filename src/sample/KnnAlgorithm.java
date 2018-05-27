@@ -1,7 +1,6 @@
 package sample;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class KnnAlgorithm {
     ArrayList<ProjectPoint> projectPoints;
@@ -17,6 +16,61 @@ public class KnnAlgorithm {
 
 
     public ArrayList<Project> getGoodProjects(int k ,ProjectPoint target){
+
+        ArrayList<Project> res =new ArrayList<>();
+
+       ArrayList<ProjectPoint> tempProjectPoints = new ArrayList<>(projectPoints);
+
+        ArrayList<Project> tempProjects = new ArrayList<>(projects);
+
+        int n = 0;
+
+        while (n < k) {
+
+            ArrayList<Double> distances = new ArrayList<>();
+            for (ProjectPoint pp : tempProjectPoints) {
+                distances.add(target.distenc(pp));
+            }
+
+
+            double min = 10000000.0;
+
+            for (double d : distances) {
+
+                if (d < min) {
+                    min = d;
+                }
+
+            }
+
+
+            ArrayList<ProjectPoint> newTempProjectPoints = new ArrayList<>();
+            ArrayList<Project> newTempProjects = new ArrayList<>();
+
+            for (int i = 0; i < tempProjectPoints.size(); i++) {
+
+                if(distances.get(i) == min){
+                   if(!projectIsTaken(tempProjects.get(i),res))
+                        res.add(tempProjects.get(i));
+                }else {
+                    newTempProjectPoints.add(tempProjectPoints.get(i));
+                    newTempProjects.add(tempProjects.get(i));
+                }
+
+            }
+
+
+            tempProjectPoints = newTempProjectPoints;
+            tempProjects = newTempProjects;
+
+
+            n++;
+        }
+        return res;
+    }
+
+
+    public ArrayList<Project> getGoodProfessors(int k ,ProjectPoint target){
 
         ArrayList<Project> res =new ArrayList<>();
         ArrayList<ProjectPoint> tempProjectPoints = new ArrayList<>(projectPoints);
@@ -45,7 +99,7 @@ public class KnnAlgorithm {
             for (int i = 0; i < tempProjectPoints.size(); i++) {
 
                 if(distances.get(i) == min){
-                   if(!isTaken(tempProjects.get(i),res))
+                    if(!professorIsTaken(tempProjects.get(i),res))
                         res.add(tempProjects.get(i));
                 }else {
                     newTempProjectPoints.add(tempProjectPoints.get(i));
@@ -66,10 +120,22 @@ public class KnnAlgorithm {
 
 
 
-    private boolean isTaken(Project project , ArrayList<Project> projects){
+    private boolean projectIsTaken(Project project , ArrayList<Project> projects){
 
         for(Project p : projects){
             if(p.getTitle().equals(project.getTitle()))
+                return true;
+        }
+
+        return false;
+    }
+
+
+
+    private boolean professorIsTaken(Project project , ArrayList<Project> projects){
+
+        for(Project p : projects){
+            if(p.getProf().getId() == project.getProf().getId())
                 return true;
         }
 

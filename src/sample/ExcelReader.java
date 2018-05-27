@@ -1,9 +1,5 @@
 package sample;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.org.apache.xerces.internal.impl.xpath.XPath;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -17,26 +13,72 @@ import java.util.ArrayList;
 public class ExcelReader {
 
     ArrayList<Project> projects;
+    ArrayList<Professor> professors;
     File file;
     XSSFWorkbook workbook;
     XSSFSheet sheet;
-    boolean isYoussefFile = false;
+    public static String[] fileTypes = new String[]{"ملف الاستبيان" , "ملف يوسف","ملف اسماء المشرفين"};
 
-     public ExcelReader(String path){
+
+
+
+    public ExcelReader(String path , String fileType){
 
         projects = new ArrayList<>();
+        professors = new ArrayList<>();
         file = new File(path);
         init();
-        if(isYoussefFile)
+
+
+
+
+        if(fileType.equals(fileTypes[1]))
             readYoussefFile();
-        else
+        else if(fileType.equals(fileTypes[0]))
             readFile();
+        else if(fileType.equals(fileTypes[2]))
+            readProfessorsFile();
+
     }
 
 
-    public ArrayList<Project> getProjects() {
-        return projects;
+
+    private void readProfessorsFile() {
+
+        int id  = 0, dept = 0;
+        String name;
+
+        XSSFRow row;
+        XSSFCell cell;
+        int lastRowNum  = sheet.getLastRowNum();
+
+        for(int i =1 ; i <= lastRowNum ; i++){
+            name = "";
+
+            row = sheet.getRow(i);
+            int lastCellNum = row.getLastCellNum();
+            for(int j = 0 ; j < lastCellNum;j++){
+                cell = row.getCell(j);
+
+                if(j == 0) id =(int) cell.getNumericCellValue();
+
+                if(j == 1) name = cell.getStringCellValue();
+
+                if(j == 2)  dept =(int) cell.getNumericCellValue();
+
+            }
+            professors.add(new Professor(id,name,dept));
+
+        }
+
+
+
+
+
     }
+
+
+
 
 
     private void readFile(){
@@ -56,6 +98,7 @@ public class ExcelReader {
             dept = new  boolean[3];
             types = new boolean[14];
             prof = "";
+            Professor professor = new Professor();
 
             row = sheet.getRow(i);
             int lastCellNum = row.getLastCellNum();
@@ -68,9 +111,13 @@ public class ExcelReader {
 
                 if(j == 2) fillTypes(types,cell.getStringCellValue().split(","));
 
-                if(j == 3) prof = cell.getStringCellValue();
+                if(j == 3){ prof = cell.getStringCellValue();
+                            professor.setName(prof);
+
+                }
             }
-            projects.add(new Project(title,dept,types,prof));
+
+            projects.add(new Project(title,dept,types,professor));
 
         }
 
@@ -82,10 +129,10 @@ public class ExcelReader {
 
     private void readYoussefFile(){
 
-        String title;
-        boolean[] dept;
-        boolean[] types;
-        String prof;
+        String title = "";
+        boolean[] dept = new  boolean[3];
+        boolean[] types = new boolean[14];
+        String prof = "";
 
         XSSFRow row;
         XSSFCell cell;
@@ -97,6 +144,7 @@ public class ExcelReader {
             title = "";
             dept = new  boolean[3];
             types = new boolean[14];
+            Professor professor = new Professor();
             prof = "";
 
             row = sheet.getRow(i);
@@ -125,9 +173,11 @@ public class ExcelReader {
                 }
 
 
-                if (j == 19) prof = cell.getStringCellValue();
+                if (j == 18){ prof = cell.getStringCellValue();
+                professor.setName(prof);
+                }
             }
-            projects.add(new Project(title,dept,types,prof));
+            projects.add(new Project(title,dept,types,professor));
 
         }
 
@@ -212,12 +262,20 @@ public class ExcelReader {
         try {
             workbook = new XSSFWorkbook(new FileInputStream(file));
             sheet = workbook.getSheetAt(0);
-            XSSFRow row = sheet.getRow(1);
-            if(row.getLastCellNum() > 4)
-                isYoussefFile = true;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+
+
+    public ArrayList<Project> getProjects() {
+        return projects;
+    }
+
+
+    public ArrayList<Professor> getProfessors() {
+        return professors;
     }
 }
