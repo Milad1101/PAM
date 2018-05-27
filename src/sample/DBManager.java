@@ -36,7 +36,7 @@ public class DBManager {
     public void addProject(Project project){
 
       try {
-            String query = "insert into dataset values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
+            String query = "insert into projects values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);";
             PreparedStatement statement = con.prepareStatement(query);
 
             for(int i = 1 ; i <= 3 ;i++ ){
@@ -125,7 +125,7 @@ public class DBManager {
     public void readFromDB(){
 
         try {
-            ResultSet resultSet = con.createStatement().executeQuery("select * from dataset");
+            ResultSet resultSet = con.createStatement().executeQuery("select * from projects");
 
 
             while(resultSet.next()){
@@ -231,17 +231,17 @@ public class DBManager {
         ArrayList<Project> projects =new ArrayList<>();
 
         try{
-            ResultSet resultSet = con.createStatement().executeQuery("select * from dataset");
+            ResultSet resultSet = con.createStatement().executeQuery("select * from projects,professors where prof_id=professors.id;");
 
-            ArrayList<Professor> professors =getProfessors();
-
-            Professor professor = new Professor();
+            Professor professor;
             while(resultSet.next()){
 
                 String title = "";
                 boolean[] dept = new boolean[3];
                 boolean[] types= new boolean[14];
                 int profID;
+                String profName="";
+                int prof_dept;
 
                 for(int i=1;i<=3;i++){
                     if (resultSet.getInt(i)==0){
@@ -262,13 +262,17 @@ public class DBManager {
 
                 title= resultSet.getString(18);
                 profID= resultSet.getInt(19);
+                profName=resultSet.getString(21);
+                prof_dept=resultSet.getInt(22);
+                professor= new Professor(profID,profName,prof_dept);
 
-                for(Professor prof:professors){
-                    if (prof.getId()==profID){
-                        professor =new Professor(prof);
-                        break;
-                    }
-                }
+
+//                for(Professor prof:professors){
+//                    if (prof.getId()==profID){
+//                        professor =new Professor(prof);
+//                        break;
+//                    }
+//                }
 
                 projects.add(new Project(title,dept,types,professor));
             }
