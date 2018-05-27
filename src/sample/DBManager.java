@@ -6,7 +6,11 @@ import java.util.ArrayList;
 public class DBManager {
     Connection con;
     ArrayList<Professor> professors;
-    public static String[] projectTypes = {"اتمتة","ذكاء","قواعد بيانات","ويب","خوارزميات","دراسة نظام","ألعاب","اختبار نظام","أمن معلومات","اندرويد","مقارنة نظم","وسائط متعددة","تصميم نظام","محاكاة"};
+    public static String[] projectTypes = {"اتمتة","ذكاء","قواعد بيانات","ويب","خوارزميات"
+                                            ,"دراسة نظام","ألعاب","اختبار نظام","أمن معلومات"
+                                            ,"اندرويد","مقارنة نظم","وسائط متعددة",
+                                            "تصميم نظام","محاكاة"};
+    
     public DBManager(){
 
        try {
