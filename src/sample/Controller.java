@@ -96,7 +96,6 @@ public class Controller implements Initializable{
 
     private void fillShouldAskQuestions(boolean[][] saq){
 
-        ArrayList<Project> projects =   dbManager.getProjects();
         for(int i = 0 ; i < DBManager.projectTypes.length ; i++) {
             for (Project p : projects)
                 for(int j =0 ; j < DBManager.projectTypes.length ; j++)
@@ -249,7 +248,7 @@ public class Controller implements Initializable{
         else
             targetDept = 2;
 
-        for(Project p : dbManager.getProjects())
+        for(Project p : projects)
             if(p.getDept()[targetDept]) dataProjects.add(p);
 
         KnnAlgorithm knnAlgorithm = new KnnAlgorithm(dataProjects);
@@ -283,7 +282,7 @@ public class Controller implements Initializable{
         else
             targetDept = 2;
 
-        for(Project p : dbManager.getProjects())
+        for(Project p : projects)
             if(p.getDept()[targetDept]) dataProjects.add(p);
 
         KnnAlgorithm knnAlgorithm = new KnnAlgorithm(dataProjects);
@@ -331,7 +330,7 @@ public class Controller implements Initializable{
     public void selectProfessorBut1Clicked(ActionEvent event) {
 
         String selectedProf = professorList1.getSelectionModel().getSelectedItem();
-        for(Professor p:dbManager.getProfessors())
+        for(Professor p:professors)
             if(p.getName().equals(selectedProf)) {
                 targetProject.setProf(p);
                 break;
