@@ -43,6 +43,9 @@ public class Controller implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
 
         fileManager = new FileManager();
+        questions = new ArrayList<>();
+        projects = new ArrayList<>();
+        professors = new ArrayList<>();
         shouldAskQuestions = new boolean[14][14];
         questionsAnswers = new boolean[14];
         fillShouldAskQuestions(shouldAskQuestions);
