@@ -80,7 +80,7 @@ public class FileManager {
 
 
     public void writeProfessors(ArrayList<Professor> professors) throws IOException {
-        File f = new File(questionsFileName);
+        File f = new File(professorsFileName);
 
         FileOutputStream fos = new FileOutputStream(f);
 
