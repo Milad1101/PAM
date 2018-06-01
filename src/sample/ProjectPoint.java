@@ -17,41 +17,36 @@ public class ProjectPoint {
     private void calculatePos(){
 
         int numOfTypes =0;
-
-        for(boolean b: project.getTypes()){
+        for(boolean b: project.getTypes())
             if(b)numOfTypes++;
-        }
 
         if(numOfTypes == 0) {
             type[0] = 1.0;
             return;
         }
+
         double v;
         v = 1.0 / numOfTypes;
 
-        for(int i = 0 ; i < type.length ; i++){
-            if(project.getTypes()[i]){
+        for(int i = 0 ; i < type.length ; i++)
+            if(project.getTypes()[i])
                 type[i] = v;
-            }else{
+            else
                 type[i] = 0.0;
-            }
-        }
 
     }
 
 
-    public double distenc(ProjectPoint p){
-        double res = 0.0;
-
-        double sumOfDifSum = 0.0;
-
+    public double distance(ProjectPoint p){
+        
+        double res;
+        double sumOf2Dif = 0.0;
         for(int i = 0; i < type.length ; i++){
-            sumOfDifSum += Math.pow((type[i] - p.getType()[i]),2);
+            sumOf2Dif += Math.pow((type[i] - p.getType()[i]),2);
         }
-
-        res = Math.sqrt(sumOfDifSum);
-
+        res = Math.sqrt(sumOf2Dif);
         return res;
+
     }
 
 

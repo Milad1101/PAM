@@ -1,6 +1,8 @@
 package sample;
 
-public class Project {
+import java.io.Serializable;
+
+public class Project implements Serializable{
 
     private String title;
     private boolean[] dept;
@@ -8,10 +10,12 @@ public class Project {
     private Professor professor;
 
     public Project(String title, boolean[] dept, boolean[] types, Professor professor) {
+
         this.title = title;
         this.dept = dept;
         this.types = types;
         this.professor=professor;
+
     }
 
     public String getTitle() {

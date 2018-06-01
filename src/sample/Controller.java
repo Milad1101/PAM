@@ -9,6 +9,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -30,7 +31,10 @@ public class Controller implements Initializable{
     private boolean[] questionsAnswers;
     private boolean[][] shouldAskQuestions;
     private DBManager dbManager;
+    private FileManager fileManager;
     private ArrayList<Questions> questions;
+    private ArrayList<Project> projects;
+    private ArrayList<Professor> professors;
     private Project targetProject;
     private ArrayList<Project> goodProjects;
     private Project selectedProject;
@@ -38,20 +42,45 @@ public class Controller implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        fileManager = new FileManager();
         questions = new ArrayList<>();
-        dbManager = new DBManager();
-        questions = dbManager.getQuestions();
-
-        setQuestion(questions.get(0));
-
         shouldAskQuestions = new boolean[14][14];
         questionsAnswers = new boolean[14];
-
         fillShouldAskQuestions(shouldAskQuestions);
 
+        try {
+
+            questions = fileManager.readQuestions();
+            projects = fileManager.readProjects();
+            professors = fileManager.readProfessors();
+
+        }catch (Exception e){
+
+            dbManager = new DBManager();
+            questions = dbManager.getQuestions();
+            projects = dbManager.getProjects();
+            professors = dbManager.getProfessors();
+
+            try {
+
+                fileManager.writeProjects(projects);
+                fileManager.writeQuestions(dbManager.getQuestions());
+                fileManager.writeProfessors(professors);
+
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
+        }
+
+
+        setQuestion(questions.get(0));
         boolean[] dept = new boolean[3];
         boolean[] types = new boolean[14];
         targetProject = new Project("",dept,types,new Professor());
+
+
+
 
     }
 

@@ -1,11 +1,12 @@
 package sample;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Questions {
+public class Questions implements Serializable{
     int id;
     String question;
-    ArrayList<String> answers= new ArrayList<>();
+    ArrayList<String> answers;
     int type;
 
     public Questions(int id, String question,ArrayList<String> answers,int type){

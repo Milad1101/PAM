@@ -1,6 +1,8 @@
 package sample;
 
-public class Professor {
+import java.io.Serializable;
+
+public class Professor implements Serializable{
 
     int id , dept;
     String name;

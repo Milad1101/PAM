@@ -18,52 +18,35 @@ public class KnnAlgorithm {
     public ArrayList<Project> getGoodProjects(int k ,ProjectPoint target){
 
         ArrayList<Project> res =new ArrayList<>();
-
-       ArrayList<ProjectPoint> tempProjectPoints = new ArrayList<>(projectPoints);
-
+        ArrayList<ProjectPoint> tempProjectPoints = new ArrayList<>(projectPoints);
         ArrayList<Project> tempProjects = new ArrayList<>(projects);
-
         int n = 0;
-
         while (n < k) {
 
             ArrayList<Double> distances = new ArrayList<>();
-            for (ProjectPoint pp : tempProjectPoints) {
-                distances.add(target.distenc(pp));
-            }
-
+            for (ProjectPoint pp : tempProjectPoints)
+                distances.add(target.distance(pp));
 
             double min = 10000000.0;
-
-            for (double d : distances) {
-
-                if (d < min) {
-                    min = d;
-                }
-
-            }
-
+            for (double d : distances)
+                if (d < min) min = d;
 
             ArrayList<ProjectPoint> newTempProjectPoints = new ArrayList<>();
             ArrayList<Project> newTempProjects = new ArrayList<>();
-
             for (int i = 0; i < tempProjectPoints.size(); i++) {
 
                 if(distances.get(i) == min){
                    if(!projectIsTaken(tempProjects.get(i),res))
                         res.add(tempProjects.get(i));
-                }else {
+                }else{
                     newTempProjectPoints.add(tempProjectPoints.get(i));
                     newTempProjects.add(tempProjects.get(i));
                 }
 
             }
 
-
             tempProjectPoints = newTempProjectPoints;
             tempProjects = newTempProjects;
-
-
             n++;
         }
         return res;
@@ -81,7 +64,7 @@ public class KnnAlgorithm {
 
             ArrayList<Double> distances = new ArrayList<>();
             for (ProjectPoint pp : tempProjectPoints) {
-                distances.add(target.distenc(pp));
+                distances.add(target.distance(pp));
             }
 
 
@@ -122,10 +105,9 @@ public class KnnAlgorithm {
 
     private boolean projectIsTaken(Project project , ArrayList<Project> projects){
 
-        for(Project p : projects){
+        for(Project p : projects)
             if(p.getTitle().equals(project.getTitle()))
                 return true;
-        }
 
         return false;
     }
@@ -134,10 +116,9 @@ public class KnnAlgorithm {
 
     private boolean professorIsTaken(Project project , ArrayList<Project> projects){
 
-        for(Project p : projects){
+        for(Project p : projects)
             if(p.getProf().getId() == project.getProf().getId())
                 return true;
-        }
 
         return false;
     }
