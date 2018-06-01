@@ -20,6 +20,8 @@ public class FileManager {
             for(Project p : projects){
                 oo.writeObject(p);
             }
+            oo.close();
+            fos.close();
 
     }
 
@@ -57,6 +59,9 @@ public class FileManager {
             oo.writeObject(q);
         }
 
+        oo.close();
+        fos.close();
+
     }
     public ArrayList<Questions> readQuestions() throws IOException, ClassNotFoundException {
 
@@ -91,6 +96,9 @@ public class FileManager {
         for(Professor p : professors){
             oo.writeObject(p);
         }
+
+        oo.close();
+        fos.close();
 
     }
     public ArrayList<Professor> readProfessors() throws IOException, ClassNotFoundException {
