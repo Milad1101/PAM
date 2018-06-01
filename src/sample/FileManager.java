@@ -37,6 +37,7 @@ public class FileManager {
 
             Project p;
             while ((p = (Project) ois.readObject()) != null){
+                System.out.println(p.getTitle());
                 res.add(p);
             }
 
@@ -70,6 +71,7 @@ public class FileManager {
 
         Questions q;
         while ((q = (Questions) ois.readObject()) != null){
+
             res.add(q);
         }
 
