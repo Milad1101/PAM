@@ -56,19 +56,15 @@ public class Controller implements Initializable{
         }catch (Exception e){
 
             dbManager = new DBManager();
+
             questions = dbManager.getQuestions();
             projects = dbManager.getProjects();
             professors = dbManager.getProfessors();
 
-            try {
+            fileManager.writeProjects(projects);
+            fileManager.writeQuestions(questions);
+            fileManager.writeProfessors(professors);
 
-                fileManager.writeProjects(projects);
-                fileManager.writeQuestions(questions);
-                fileManager.writeProfessors(professors);
-
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
 
         }
 

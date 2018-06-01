@@ -9,12 +9,13 @@ public class FileManager {
     String questionsFileName = "questions.pcas";
     String professorsFileName = "professors.pcas";
 
-    public void writeProjects(ArrayList<Project> projects) throws IOException {
+    public void writeProjects(ArrayList<Project> projects)  {
 
         File f = new File(projectsFileName);
 
-            FileOutputStream fos = new FileOutputStream(f);
-
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(f);
             ObjectOutputStream oo = new ObjectOutputStream(fos);
 
             for(Project p : projects){
@@ -23,6 +24,11 @@ public class FileManager {
 
             oo.close();
             fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -48,19 +54,25 @@ public class FileManager {
     }
 
 
-    public void writeQuestions(ArrayList<Questions> questions) throws IOException {
+    public void writeQuestions(ArrayList<Questions> questions)  {
         File f = new File(questionsFileName);
 
-        FileOutputStream fos = new FileOutputStream(f);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(f);
+            ObjectOutputStream oo = new ObjectOutputStream(fos);
 
-        ObjectOutputStream oo = new ObjectOutputStream(fos);
+            for(Questions q : questions){
+                oo.writeObject(q);
+            }
 
-        for(Questions q : questions){
-            oo.writeObject(q);
+            oo.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        oo.close();
-        fos.close();
+
 
     }
     public ArrayList<Questions> readQuestions() throws IOException, ClassNotFoundException {
@@ -85,19 +97,25 @@ public class FileManager {
 
 
 
-    public void writeProfessors(ArrayList<Professor> professors) throws IOException {
+    public void writeProfessors(ArrayList<Professor> professors){
         File f = new File(professorsFileName);
 
-        FileOutputStream fos = new FileOutputStream(f);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(f);
+            ObjectOutputStream oo = new ObjectOutputStream(fos);
 
-        ObjectOutputStream oo = new ObjectOutputStream(fos);
+            for(Professor p : professors){
+                oo.writeObject(p);
+            }
 
-        for(Professor p : professors){
-            oo.writeObject(p);
+            oo.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        oo.close();
-        fos.close();
+
 
     }
     public ArrayList<Professor> readProfessors() throws IOException, ClassNotFoundException {
