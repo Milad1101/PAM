@@ -64,7 +64,7 @@ public class Controller implements Initializable{
             try {
 
                 fileManager.writeProjects(projects);
-                fileManager.writeQuestions(dbManager.getQuestions());
+                fileManager.writeQuestions(questions);
                 fileManager.writeProfessors(professors);
 
             } catch (IOException e1) {

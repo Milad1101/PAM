@@ -20,6 +20,7 @@ public class FileManager {
             for(Project p : projects){
                 oo.writeObject(p);
             }
+
             oo.close();
             fos.close();
 
